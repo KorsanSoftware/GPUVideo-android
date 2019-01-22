@@ -30,6 +30,8 @@ public class GPUMp4Composer {
     private int timeScale = 1;
     private boolean flipVertical = false;
     private boolean flipHorizontal = false;
+    private int frameRate = 30;
+    private int iframeInterval = 1;
 
     private ExecutorService executorService;
 
@@ -51,6 +53,18 @@ public class GPUMp4Composer {
 
     public GPUMp4Composer videoBitrate(int bitrate) {
         this.bitrate = bitrate;
+        return this;
+    }
+
+    public GPUMp4Composer frameRate(int frameRate)
+    {
+        this.frameRate = frameRate;
+        return this;
+    }
+
+    public GPUMp4Composer iframeInterval(int iframeInterval)
+    {
+        this.iframeInterval = iframeInterval;
         return this;
     }
 
@@ -168,9 +182,6 @@ public class GPUMp4Composer {
                         }
                     }
                 }
-//                if (filter instanceof IResolutionFilter) {
-//                    ((IResolutionFilter) filter).setResolution(outputResolution);
-//                }
 
                 if (timeScale < 2) {
                     timeScale = 1;
@@ -197,7 +208,9 @@ public class GPUMp4Composer {
                             fillModeCustomItem,
                             timeScale,
                             flipVertical,
-                            flipHorizontal
+                            flipHorizontal,
+                            frameRate,
+                            iframeInterval
                     );
 
                 } catch (Exception e) {
@@ -286,7 +299,6 @@ public class GPUMp4Composer {
             retriever.setDataSource(path);
             int width = Integer.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
             int height = Integer.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
-
             return new Size(width, height);
         } finally {
             try {
@@ -298,5 +310,4 @@ public class GPUMp4Composer {
             }
         }
     }
-
 }

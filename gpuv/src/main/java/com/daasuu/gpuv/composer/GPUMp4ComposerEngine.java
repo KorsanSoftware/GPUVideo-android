@@ -49,7 +49,9 @@ class GPUMp4ComposerEngine {
             final FillModeCustomItem fillModeCustomItem,
             final int timeScale,
             final boolean flipVertical,
-            final boolean flipHorizontal
+            final boolean flipHorizontal,
+            final int frameRate,
+            final int iframeInterval
     ) throws IOException {
 
 
@@ -69,8 +71,8 @@ class GPUMp4ComposerEngine {
             MediaFormat videoOutputFormat = MediaFormat.createVideoFormat("video/avc", outputResolution.getWidth(), outputResolution.getHeight());
 
             videoOutputFormat.setInteger(MediaFormat.KEY_BIT_RATE, bitrate);
-            videoOutputFormat.setInteger(MediaFormat.KEY_FRAME_RATE, 30);
-            videoOutputFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 1);
+            videoOutputFormat.setInteger(MediaFormat.KEY_FRAME_RATE, frameRate);
+            videoOutputFormat.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, iframeInterval);//1
             videoOutputFormat.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
 
 
