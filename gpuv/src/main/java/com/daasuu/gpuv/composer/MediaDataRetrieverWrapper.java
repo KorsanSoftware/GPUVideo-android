@@ -6,12 +6,7 @@ public class MediaDataRetrieverWrapper implements AutoCloseable {
 
     private MediaMetadataRetriever mediaMetadataRetriever;
 
-    public MediaDataRetrieverWrapper()
-    {
-        mediaMetadataRetriever = new MediaMetadataRetriever();
-    }
-
-    public MediaDataRetrieverWrapper(String path)
+    MediaDataRetrieverWrapper(String path)
     {
         mediaMetadataRetriever = new MediaMetadataRetriever();
         setDataSource(path);
@@ -40,7 +35,7 @@ public class MediaDataRetrieverWrapper implements AutoCloseable {
     }
 
     @Override
-    public void close() throws Exception {
+    public void close(){
         mediaMetadataRetriever.release();
     }
 }

@@ -10,7 +10,7 @@ import java.util.HashMap;
 import static android.opengl.GLES20.GL_FLOAT;
 
 
-public class GlFilter {
+public class GlFilter implements AutoCloseable{
     public static final String DEFAULT_UNIFORM_SAMPLER = "sTexture";
 
     protected static final String DEFAULT_VERTEX_SHADER =
@@ -157,4 +157,8 @@ public class GlFilter {
     }
 
 
+    @Override
+    public void close() {
+        release();
+    }
 }

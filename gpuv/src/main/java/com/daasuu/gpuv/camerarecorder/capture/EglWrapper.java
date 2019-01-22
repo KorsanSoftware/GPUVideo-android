@@ -4,7 +4,7 @@ import android.opengl.*;
 import android.util.Log;
 
 
-public class EglWrapper {
+public class EglWrapper implements AutoCloseable{
     private static final boolean DEBUG = false;
     private static final String TAG = "EglWrapper";
 
@@ -229,5 +229,8 @@ public class EglWrapper {
         return configs[0];
     }
 
+    @Override
+    public void close() {
+        release();
+    }
 }
-

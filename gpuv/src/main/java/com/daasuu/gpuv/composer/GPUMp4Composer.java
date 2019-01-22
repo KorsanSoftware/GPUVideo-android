@@ -138,7 +138,6 @@ public class GPUMp4Composer {
                 try {
                     fileInputStream = new FileInputStream(srcFile);
                 } catch (FileNotFoundException e) {
-                    e.printStackTrace();
                     if (listener != null) {
                         listener.onFailed(e);
                     }
@@ -148,7 +147,6 @@ public class GPUMp4Composer {
                 try {
                     engine.setDataSource(fileInputStream.getFD());
                 } catch (IOException e) {
-                    e.printStackTrace();
                     if (listener != null) {
                         listener.onFailed(e);
                     }
@@ -194,7 +192,7 @@ public class GPUMp4Composer {
 
                 try {
                     if (bitrate < 0) {
-                        bitrate = calcBitRate(outputResolution.getWidth(), outputResolution.getHeight());
+                        bitrate = calcBitRate(outputResolution.getWidth(), outputResolution.getHeight(),frameRate);
                     }
                     engine.compose(
                             destPath,
@@ -214,21 +212,18 @@ public class GPUMp4Composer {
                     );
 
                 } catch (Exception e) {
-                    e.printStackTrace();
                     if (listener != null) {
                         listener.onFailed(e);
                     }
                     executorService.shutdown();
                     return;
                 }
-
                 if (listener != null) {
                     listener.onCompleted();
                 }
                 executorService.shutdown();
             }
         });
-
         return this;
     }
 
@@ -260,54 +255,37 @@ public class GPUMp4Composer {
     }
 
     private int getVideoRotation(String videoFilePath) {
-        MediaMetadataRetriever mediaMetadataRetriever = null;
-        try {
-            mediaMetadataRetriever = new MediaMetadataRetriever();
-            mediaMetadataRetriever.setDataSource(videoFilePath);
-            String orientation = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
-            return Integer.valueOf(orientation);
-        } catch (IllegalArgumentException e) {
+        try(MediaDataRetrieverWrapper retriever = new MediaDataRetrieverWrapper(videoFilePath))
+        {
+            return retriever.extractMetadataInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_ROTATION);
+        }
+        catch(IllegalArgumentException e)
+        {
             Log.e("MediaMetadataRetriever", "getVideoRotation IllegalArgumentException");
             return 0;
-        } catch (RuntimeException e) {
+        }
+        catch (RuntimeException e) {
             Log.e("MediaMetadataRetriever", "getVideoRotation RuntimeException");
             return 0;
         } catch (Exception e) {
             Log.e("MediaMetadataRetriever", "getVideoRotation Exception");
             return 0;
-        } finally {
-            try {
-                if (mediaMetadataRetriever != null) {
-                    mediaMetadataRetriever.release();
-                }
-            } catch (RuntimeException e) {
-                Log.e(TAG, "Failed to release mediaMetadataRetriever.", e);
-            }
         }
     }
 
-    private int calcBitRate(int width, int height) {
-        final int bitrate = (int) (0.25 * 30 * width * height);
+    private int calcBitRate(int width, int height,int frameRate) {
+        //framerate 30
+        final int bitrate = (int) (0.25 * frameRate * width * height);
         Log.i(TAG, "bitrate=" + bitrate);
         return bitrate;
     }
 
     private Size getVideoResolution(final String path, final int rotation) {
-        MediaMetadataRetriever retriever = null;
-        try {
-            retriever = new MediaMetadataRetriever();
-            retriever.setDataSource(path);
-            int width = Integer.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH));
-            int height = Integer.valueOf(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT));
+        try(MediaDataRetrieverWrapper retriever = new MediaDataRetrieverWrapper(path))
+        {
+            int width = retriever.extractMetadataInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
+            int height = retriever.extractMetadataInt(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
             return new Size(width, height);
-        } finally {
-            try {
-                if (retriever != null) {
-                    retriever.release();
-                }
-            } catch (RuntimeException e) {
-                Log.e(TAG, "Failed to release mediaMetadataRetriever.", e);
-            }
         }
     }
 }

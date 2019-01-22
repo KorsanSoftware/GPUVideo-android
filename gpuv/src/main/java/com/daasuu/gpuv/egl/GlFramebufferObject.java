@@ -20,8 +20,7 @@ import static android.opengl.GLES20.GL_TEXTURE_BINDING_2D;
 import static android.opengl.GLES20.GL_UNSIGNED_BYTE;
 
 
-
-public class GlFramebufferObject {
+public class GlFramebufferObject implements AutoCloseable {
     private int width;
     private int height;
     private int framebufferName;
@@ -117,4 +116,8 @@ public class GlFramebufferObject {
     }
 
 
+    @Override
+    public void close() throws Exception {
+        release();
+    }
 }

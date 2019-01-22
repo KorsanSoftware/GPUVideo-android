@@ -148,7 +148,6 @@ public class MediaVideoEncoder extends MediaEncoder {
         final int numCodecs = codecInfos.length;
         for (int i = 0; i < numCodecs; i++) {
             final MediaCodecInfo codecInfo = codecInfos[i];
-
             if (!codecInfo.isEncoder()) {    // skipp decoder
                 continue;
             }
@@ -185,7 +184,7 @@ public class MediaVideoEncoder extends MediaEncoder {
         int colorFormat;
         for (int i = 0; i < caps.colorFormats.length; i++) {
             colorFormat = caps.colorFormats[i];
-            if (isRecognizedViewoFormat(colorFormat)) {
+            if (isRecognizedVideoFormat(colorFormat)) {
                 if (result == 0)
                     result = colorFormat;
                 break;
@@ -196,8 +195,8 @@ public class MediaVideoEncoder extends MediaEncoder {
         return result;
     }
 
-    private static boolean isRecognizedViewoFormat(final int colorFormat) {
-        Log.i(TAG, "isRecognizedViewoFormat:colorFormat=" + colorFormat);
+    private static boolean isRecognizedVideoFormat(final int colorFormat) {
+        Log.i(TAG, "isRecognizedVideoFormat:colorFormat=" + colorFormat);
         return (colorFormat == MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
     }
 

@@ -173,6 +173,4 @@ public enum FilterType {
                 return new GlFilter();
         }
     }
-
-
 }

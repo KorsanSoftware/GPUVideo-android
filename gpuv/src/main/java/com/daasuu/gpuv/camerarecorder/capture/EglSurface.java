@@ -10,11 +10,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 
-
-public class EglSurface {
+public class EglSurface implements AutoCloseable {
     private static final boolean DEBUG = false;
     private static final String TAG = "EglWrapper";
-
 
     private final EglWrapper egl;
     private EGLSurface eglSurface = EGL14.EGL_NO_SURFACE;
@@ -61,4 +59,8 @@ public class EglSurface {
         return height;
     }
 
+    @Override
+    public void close(){
+        release();
+    }
 }
